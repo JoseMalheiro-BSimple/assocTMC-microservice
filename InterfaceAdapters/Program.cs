@@ -11,6 +11,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using InterfaceAdapters.Consumers;
 using InterfaceAdapters.Publishers;
+using Domain.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,7 @@ builder.Services.AddScoped<IMessagePublisher, MassTransitPublisher>();
 
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<AssociationTrainingModuleCollaboratorCreatedConsumer>();
     x.AddConsumer<CollaboratorCreatedConsumer>();
     x.AddConsumer<TrainingModuleCreatedConsumer>();
     x.UsingRabbitMq((context, cfg) =>

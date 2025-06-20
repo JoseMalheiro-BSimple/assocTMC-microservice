@@ -51,9 +51,15 @@ public class AssociationTrainingModuleCollaboratorService
 
     public async Task CreateWithNoValidations(Guid id, Guid trainingModuleId, Guid collaboratorId, PeriodDate periodDate)
     {
-        IAssociationTrainingModuleCollaborator tmc;
+        // There is no data validation, but there is validation to no insert duplicate values on table
+        IAssociationTrainingModuleCollaborator? assoc = await _assocTMCRepository.GetByIdAsync(id);
 
-        tmc = _assocTMCFactory.Create(id, trainingModuleId, collaboratorId, periodDate);
-        await _assocTMCRepository.AddAsync(tmc);
+        if (assoc == null)
+        {
+            IAssociationTrainingModuleCollaborator tmc;
+
+            tmc = _assocTMCFactory.Create(id, trainingModuleId, collaboratorId, periodDate);
+            await _assocTMCRepository.AddAsync(tmc);
+        }
     }
 }
