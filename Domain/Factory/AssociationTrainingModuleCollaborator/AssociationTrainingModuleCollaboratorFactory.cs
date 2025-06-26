@@ -8,11 +8,13 @@ public class AssociationTrainingModuleCollaboratorFactory : IAssociationTraining
 {
     private readonly ICollaboratorRepository _collabRepository;
     private readonly ITrainingModuleRepository _trainingModuleRepository;
+    private readonly IAssociationTrainingModuleCollaboratorsRepository _assocTMCRepository;
 
-    public AssociationTrainingModuleCollaboratorFactory(ICollaboratorRepository collaboratorRepository, ITrainingModuleRepository trainingModuleRepository)
+    public AssociationTrainingModuleCollaboratorFactory(ICollaboratorRepository collaboratorRepository, ITrainingModuleRepository trainingModuleRepository, IAssociationTrainingModuleCollaboratorsRepository assocTMCRepository)
     {
         _collabRepository = collaboratorRepository;
         _trainingModuleRepository = trainingModuleRepository;
+        _assocTMCRepository = assocTMCRepository;
     }
 
     public async Task<IAssociationTrainingModuleCollaborator> Create(Guid trainingModuleId, Guid collaboratorId, DateOnly initDate, DateOnly endDate)
@@ -27,6 +29,17 @@ public class AssociationTrainingModuleCollaboratorFactory : IAssociationTraining
             throw new ArgumentException("TrainingModule must exist");
 
         PeriodDate periodDate = new PeriodDate(initDate, endDate);
+
+        // Unicity test
+        IEnumerable<IAssociationTrainingModuleCollaborator> assocsSameCollabAndTM = await _assocTMCRepository.GetByCollabAndTrainingModule(collaboratorId, trainingModuleId);
+
+        bool hasOverlap = assocsSameCollabAndTM.Any(a =>
+        a.PeriodDate.InitDate <= periodDate.FinalDate &&
+        a.PeriodDate.FinalDate >= periodDate.InitDate);
+
+        if (hasOverlap)
+            throw new InvalidOperationException("An overlapping association already exists for this collaborator and training module.");
+
 
         return new AssociationTrainingModuleCollaborator(trainingModuleId, collaboratorId, periodDate);
     }

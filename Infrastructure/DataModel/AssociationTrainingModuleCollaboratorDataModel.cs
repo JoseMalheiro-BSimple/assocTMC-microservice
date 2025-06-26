@@ -12,6 +12,7 @@ public class AssociationTrainingModuleCollaboratorDataModel : IAssociationTraini
 
     public AssociationTrainingModuleCollaboratorDataModel()
     {
+        PeriodDate = new PeriodDate();
     }
 
     public AssociationTrainingModuleCollaboratorDataModel(IAssociationTrainingModuleCollaborator trainingModuleCollaborators)

@@ -14,7 +14,6 @@ namespace Infrastructure.Repositories
         {
             _mapper = mapper;
         }
-
         public override IAssociationTrainingModuleCollaborator? GetById(Guid id)
         {
             var trainingModuleCollabDM = _context.Set<AssociationTrainingModuleCollaboratorDataModel>()
@@ -37,15 +36,14 @@ namespace Infrastructure.Repositories
             return _mapper.Map<AssociationTrainingModuleCollaboratorDataModel, AssociationTrainingModuleCollaborator>(trainingModuleCollabDM);
         }
 
-        public async Task<IEnumerable<AssociationTrainingModuleCollaborator>> GetByTrainingModuleIds(IEnumerable<Guid> trainingModuleIds)
+        public async Task<IEnumerable<IAssociationTrainingModuleCollaborator>> GetByCollabAndTrainingModule(Guid collabId, Guid trainingModuleId)
         {
-            var trainingModuleCollaboratorsDMs = await _context.Set<AssociationTrainingModuleCollaboratorDataModel>()
-                                                .Where(t => trainingModuleIds.Contains(t.TrainingModuleId))
-                                                .ToListAsync();
+            var assocsDM = await _context.Set<AssociationTrainingModuleCollaboratorDataModel>()
+                                         .Where(a => a.CollaboratorId == collabId && a.TrainingModuleId == trainingModuleId)
+                                         .ToListAsync();
 
-            var trainingModuleCollaborators = trainingModuleCollaboratorsDMs.Select(_mapper.Map<AssociationTrainingModuleCollaboratorDataModel, AssociationTrainingModuleCollaborator>);
-
-            return trainingModuleCollaborators;
+            return assocsDM.Select(_mapper.Map<AssociationTrainingModuleCollaboratorDataModel, AssociationTrainingModuleCollaborator>);
         }
+
     }
 }

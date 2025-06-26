@@ -7,7 +7,7 @@ using Domain.Models;
 
 namespace Application.Services;
 
-public class AssociationTrainingModuleCollaboratorService
+public class AssociationTrainingModuleCollaboratorService : IAssociationTrainingModuleCollaboratorService
 {
     public IAssociationTrainingModuleCollaboratorsRepository _assocTMCRepository;
     public IAssociationTrainingModuleCollaboratorFactory _assocTMCFactory;
@@ -59,7 +59,10 @@ public class AssociationTrainingModuleCollaboratorService
             IAssociationTrainingModuleCollaborator tmc;
 
             tmc = _assocTMCFactory.Create(id, trainingModuleId, collaboratorId, periodDate);
-            await _assocTMCRepository.AddAsync(tmc);
+            tmc = await _assocTMCRepository.AddAsync(tmc);
+
+            if (tmc == null)
+                throw new Exception("An error occured!");
         }
     }
 }

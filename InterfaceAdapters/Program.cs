@@ -11,7 +11,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using InterfaceAdapters.Consumers;
 using InterfaceAdapters.Publishers;
-using Domain.Messaging;
+using InterfaceAdapters.Consumers.Definition;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,14 +19,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+//opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+
+var connectionString =
+    Environment.GetEnvironmentVariable("CustomConnection") ??
+    builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<AssocTMCContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-    );
+    opt.UseNpgsql(connectionString));
 
 //Services
-builder.Services.AddTransient<AssociationTrainingModuleCollaboratorService>();
-builder.Services.AddTransient<CollaboratorService>();
-builder.Services.AddTransient<TrainingModuleService>();
+builder.Services.AddTransient<IAssociationTrainingModuleCollaboratorService,AssociationTrainingModuleCollaboratorService>();
+builder.Services.AddTransient<ICollaboratorService,CollaboratorService>();
+builder.Services.AddTransient<ITrainingModuleService, TrainingModuleService>();
 
 //Repositories
 builder.Services.AddTransient<IAssociationTrainingModuleCollaboratorsRepository, AssociationTrainingModuleCollaboratorRepositoryEF>();
@@ -55,9 +60,9 @@ builder.Services.AddScoped<IMessagePublisher, MassTransitPublisher>();
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<AssociationTrainingModuleCollaboratorCreatedConsumer>();
-    x.AddConsumer<CollaboratorCreatedConsumer>();
-    x.AddConsumer<TrainingModuleCreatedConsumer>();
+    x.AddConsumer<AssociationTrainingModuleCollaboratorCreatedConsumer, AssociationTrainingModuleCollaboratorConsumerDefinition>();
+    x.AddConsumer<CollaboratorCreatedConsumer, CollaboratorConsumerDefinition>();
+    x.AddConsumer<TrainingModuleCreatedConsumer, TrainingModuleConsumerDefinition>();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("rabbitmq://localhost");

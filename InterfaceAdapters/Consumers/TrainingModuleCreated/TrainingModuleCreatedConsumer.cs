@@ -5,9 +5,9 @@ using MassTransit;
 namespace InterfaceAdapters.Consumers;
 public class TrainingModuleCreatedConsumer : IConsumer<TrainingModuleCreated>
 {
-    private readonly TrainingModuleService _trainingModuleService;
+    private readonly ITrainingModuleService _trainingModuleService;
 
-    public TrainingModuleCreatedConsumer(TrainingModuleService trainingModuleService)
+    public TrainingModuleCreatedConsumer(ITrainingModuleService trainingModuleService)
     {
         _trainingModuleService = trainingModuleService;
     }

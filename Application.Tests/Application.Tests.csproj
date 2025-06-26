@@ -26,10 +26,4 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="AssociationTrainingModuleCollaboratorService\" />
-    <Folder Include="CollaboratorService\" />
-    <Folder Include="TrainingModuleService\" />
-  </ItemGroup>
-
 </Project>

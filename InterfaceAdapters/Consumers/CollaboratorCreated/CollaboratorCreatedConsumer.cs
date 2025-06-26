@@ -5,9 +5,9 @@ using MassTransit;
 namespace InterfaceAdapters.Consumers;
 public class CollaboratorCreatedConsumer : IConsumer<CollaboratorCreated>
 {
-    private readonly CollaboratorService _collaboratorService;
+    private readonly ICollaboratorService _collaboratorService;
 
-    public CollaboratorCreatedConsumer(CollaboratorService collaboratorService)
+    public CollaboratorCreatedConsumer(ICollaboratorService collaboratorService)
     {
         _collaboratorService = collaboratorService;
     }
@@ -15,6 +15,6 @@ public class CollaboratorCreatedConsumer : IConsumer<CollaboratorCreated>
     public async Task Consume(ConsumeContext<CollaboratorCreated> context)
     {
         var msg = context.Message;
-        await _collaboratorService.SubmitAsync(msg.id);
+        await _collaboratorService.SubmitAsync(msg.collabId);
     }
 }

@@ -5,9 +5,9 @@ using MassTransit;
 namespace InterfaceAdapters.Consumers;
 public class AssociationTrainingModuleCollaboratorCreatedConsumer : IConsumer<AssociationTrainingModuleCollaboratorCreated>
 {
-    private readonly AssociationTrainingModuleCollaboratorService _assocService;
+    private readonly IAssociationTrainingModuleCollaboratorService _assocService;
 
-    public AssociationTrainingModuleCollaboratorCreatedConsumer(AssociationTrainingModuleCollaboratorService assocService)
+    public AssociationTrainingModuleCollaboratorCreatedConsumer(IAssociationTrainingModuleCollaboratorService assocService)
     {
         _assocService = assocService;
     }
@@ -15,6 +15,6 @@ public class AssociationTrainingModuleCollaboratorCreatedConsumer : IConsumer<As
     public async Task Consume(ConsumeContext<AssociationTrainingModuleCollaboratorCreated> context)
     {
         var msg = context.Message;
-        await _assocService.CreateWithNoValidations(msg.id, msg.trainingModuleId, msg.collaboratorId, msg.PeriodDate);
+        await _assocService.CreateWithNoValidations(msg.id, msg.trainingModuleId, msg.collaboratorId, msg.periodDate);
     }
 }

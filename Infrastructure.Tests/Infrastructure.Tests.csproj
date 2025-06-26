@@ -31,10 +31,4 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="AssociationTrainingModuleCollaboratorRepository\" />
-    <Folder Include="CollaboratorRepository\" />
-    <Folder Include="TrainingModuleRepository\" />
-  </ItemGroup>
-
 </Project>
