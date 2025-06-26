@@ -1,4 +1,8 @@
-﻿using Xunit;
+﻿using Application.DTO;
+using Domain.Models;
+using Infrastructure;
+using Infrastructure.DataModel;
+using Xunit;
 
 namespace InterfaceAdapters.IntegrationTests.Tests;
 public class CreateTests : IntegrationTestBase, IClassFixture<IntegrationTestsWebApplicationFactory<Program>>

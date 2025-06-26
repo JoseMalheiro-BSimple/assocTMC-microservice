@@ -11,15 +11,12 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using InterfaceAdapters.Consumers;
 using InterfaceAdapters.Publishers;
-using InterfaceAdapters.Consumers.Definition;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-
-//opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 
 var connectionString =
     Environment.GetEnvironmentVariable("CustomConnection") ??
@@ -60,13 +57,19 @@ builder.Services.AddScoped<IMessagePublisher, MassTransitPublisher>();
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<AssociationTrainingModuleCollaboratorCreatedConsumer, AssociationTrainingModuleCollaboratorConsumerDefinition>();
-    x.AddConsumer<CollaboratorCreatedConsumer, CollaboratorConsumerDefinition>();
-    x.AddConsumer<TrainingModuleCreatedConsumer, TrainingModuleConsumerDefinition>();
+    x.AddConsumer<AssociationTrainingModuleCollaboratorCreatedConsumer>();
+    x.AddConsumer<CollaboratorCreatedConsumer>();
+    x.AddConsumer<TrainingModuleCreatedConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("rabbitmq://localhost");
-        cfg.ConfigureEndpoints(context);
+        var random = Guid.NewGuid();
+        cfg.ReceiveEndpoint($"{random}", e =>
+        {
+            e.ConfigureConsumer<AssociationTrainingModuleCollaboratorCreatedConsumer>(context);
+            e.ConfigureConsumer<CollaboratorCreatedConsumer>(context);
+            e.ConfigureConsumer<TrainingModuleCreatedConsumer>(context);
+        });
     });
 });
 

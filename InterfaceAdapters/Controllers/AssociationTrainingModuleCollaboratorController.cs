@@ -8,9 +8,9 @@ namespace InterfaceAdapters.Controllers;
 [ApiController]
 public class AssociationTrainingModuleCollaboratorController : ControllerBase
 {
-    private readonly AssociationTrainingModuleCollaboratorService _associationTrainingModuleCollaboratorService;
+    private readonly IAssociationTrainingModuleCollaboratorService _associationTrainingModuleCollaboratorService;
 
-    public AssociationTrainingModuleCollaboratorController(AssociationTrainingModuleCollaboratorService associationTrainingModuleCollaboratorService)
+    public AssociationTrainingModuleCollaboratorController(IAssociationTrainingModuleCollaboratorService associationTrainingModuleCollaboratorService)
     {
         _associationTrainingModuleCollaboratorService = associationTrainingModuleCollaboratorService;
     }
