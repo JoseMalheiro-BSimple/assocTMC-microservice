@@ -1,11 +1,8 @@
 ﻿using Application.DTO;
-using Docker.DotNet.Models;
-using Domain.Factory;
 using Domain.Models;
 using Infrastructure;
 using Infrastructure.DataModel;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http.Json;
 using Xunit;
 
 namespace InterfaceAdapters.IntegrationTests.Tests;
@@ -33,14 +30,12 @@ public class CreateTests : IntegrationTestBase, IClassFixture<IntegrationTestsWe
 
             context.TrainingModules.Add(new TrainingModuleDataModel
             {
-                Id = trainingModuleId,
-                // set required fields if any
+                Id = trainingModuleId
             });
 
             context.Collaborators.Add(new CollaboratorDataModel
             {
-                Id = collaboratorId,
-                // set required fields if any
+                Id = collaboratorId
             });
 
             await context.SaveChangesAsync();
@@ -57,16 +52,13 @@ public class CreateTests : IntegrationTestBase, IClassFixture<IntegrationTestsWe
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("api/associationsTMC", createDto);
+        var response = await PostAndDeserializeAsync<AssociationTrainingModuleCollaboratorDTO>("api/associationsTMC", createDto);
 
         // Assert
-        response.EnsureSuccessStatusCode();
-
-        var resultDto = await response.Content.ReadFromJsonAsync<AssociationTrainingModuleCollaboratorDTO>();
-        Assert.NotNull(resultDto);
-        Assert.Equal(trainingModuleId, resultDto!.TrainingModuleId);
-        Assert.Equal(collaboratorId, resultDto.CollaboratorId);
-        Assert.NotEqual(Guid.Empty, resultDto.Id);
+        Assert.NotNull(response);
+        Assert.Equal(trainingModuleId, response!.TrainingModuleId);
+        Assert.Equal(collaboratorId, response.CollaboratorId);
+        Assert.NotEqual(Guid.Empty, response.Id);
 
     }
 }
