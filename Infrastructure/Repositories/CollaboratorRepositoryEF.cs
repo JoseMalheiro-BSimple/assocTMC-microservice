@@ -22,7 +22,7 @@ public class CollaboratorRepositoryEF : GenericRepositoryEF<ICollaborator, Colla
         if (collabDM == null)
             return null;
 
-        return _mapper.Map<CollaboratorDataModel, Collaborator>(collabDM);
+        return _mapper.Map<CollaboratorDataModel, ICollaborator>(collabDM);
     }
 
     public override async Task<ICollaborator?> GetByIdAsync(Guid id)
@@ -33,6 +33,6 @@ public class CollaboratorRepositoryEF : GenericRepositoryEF<ICollaborator, Colla
         if (collabDM == null)
             return null;
 
-        return _mapper.Map<CollaboratorDataModel, Collaborator>(collabDM);
+        return _mapper.Map<CollaboratorDataModel, ICollaborator>(collabDM);
     }
 }

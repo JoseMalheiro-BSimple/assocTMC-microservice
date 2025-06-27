@@ -12,7 +12,7 @@ public class CollaboratorFactory : ICollaboratorFactory
         return new Collaborator(id);
     }
 
-    public Collaborator Create(ICollaboratorVisitor visitor)
+    public ICollaborator Create(ICollaboratorVisitor visitor)
     {
         return new Collaborator(visitor.Id);
     }

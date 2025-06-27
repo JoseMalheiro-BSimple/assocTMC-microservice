@@ -12,7 +12,7 @@ public class TrainingModuleFactory : ITrainingModuleFactory
         return new TrainingModule(id);
     }
 
-    public TrainingModule Create(ITrainingModuleVisitor visitor)
+    public ITrainingModule Create(ITrainingModuleVisitor visitor)
     {
         return new TrainingModule(visitor.Id);
     }

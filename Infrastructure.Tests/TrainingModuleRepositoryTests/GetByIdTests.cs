@@ -1,5 +1,7 @@
-﻿using Infrastructure.DataModel;
+﻿using Domain.Interfaces;
+using Infrastructure.DataModel;
 using Infrastructure.Repositories;
+using Moq;
 
 namespace Infrastructure.Tests.TrainingModuleRepositoryTests;
 public class GetByIdTests : RepositoryTestBase
@@ -19,14 +21,21 @@ public class GetByIdTests : RepositoryTestBase
         context.TrainingModules.Add(tmDM1);
         context.SaveChanges();
 
-        var repo = new TrainingModuleRepositoryEF(context, _mapper);
+        var expected = new Mock<ITrainingModule>();
+
+        expected.Setup(tm => tm.Id).Returns(id);
+
+        _mapper.Setup(m => m.Map<TrainingModuleDataModel, ITrainingModule>(It.Is<TrainingModuleDataModel>(tm => tm.Id == id)))
+               .Returns(expected.Object);
+
+        var repo = new TrainingModuleRepositoryEF(context, _mapper.Object);
 
         // Act
         var result = repo.GetById(id);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(id, result!.Id);
+        Assert.Equal(expected.Object.Id, result!.Id);
     }
 
     [Fact]
@@ -35,7 +44,7 @@ public class GetByIdTests : RepositoryTestBase
         // Arrange
         var id = Guid.NewGuid();
 
-        var repo = new TrainingModuleRepositoryEF(context, _mapper);
+        var repo = new TrainingModuleRepositoryEF(context, _mapper.Object);
 
         // Act
         var result = repo.GetById(id);

@@ -1,6 +1,8 @@
-﻿using Domain.Models;
+﻿using Domain.Interfaces;
+using Domain.Models;
 using Infrastructure.DataModel;
 using Infrastructure.Repositories;
+using Moq;
 
 namespace Infrastructure.Tests.AssociationTrainingModuleCollaboratorRepositoryTests;
 public class GetByIdAsyncTests : RepositoryTestBase
@@ -38,19 +40,31 @@ public class GetByIdAsyncTests : RepositoryTestBase
         };
 
         context.AssociationTrainingModuleCollaborators.Add(assocDM2);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
-        var repo = new AssociationTrainingModuleCollaboratorRepositoryEF(context, _mapper);
+        // Expected domain model
+        var expected = new Mock<IAssociationTrainingModuleCollaborator>();
+        expected.SetupGet(x => x.Id).Returns(id);
+        expected.SetupGet(x => x.TrainingModuleId).Returns(trainingModuleId);
+        expected.SetupGet(x => x.CollaboratorId).Returns(collaboratorId);
+        expected.SetupGet(x => x.PeriodDate).Returns(period);
+
+        // Mapper returns mocked domain model for the matching EF entity
+        _mapper.Setup(m => m.Map<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>(
+            It.Is<AssociationTrainingModuleCollaboratorDataModel>(dm => dm.Id == id)))
+            .Returns(expected.Object);
+
+        var repo = new AssociationTrainingModuleCollaboratorRepositoryEF(context, _mapper.Object);
 
         // Act
         var result = await repo.GetByIdAsync(id);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(id, result!.Id);
-        Assert.Equal(trainingModuleId, result.TrainingModuleId);
-        Assert.Equal(collaboratorId, result.CollaboratorId);
-        Assert.Equal(period, result.PeriodDate);
+        Assert.Equal(expected.Object.Id, result!.Id);
+        Assert.Equal(expected.Object.TrainingModuleId, result.TrainingModuleId);
+        Assert.Equal(expected.Object.CollaboratorId, result.CollaboratorId);
+        Assert.Equal(expected.Object.PeriodDate, result.PeriodDate);
     }
 
 
@@ -59,7 +73,7 @@ public class GetByIdAsyncTests : RepositoryTestBase
     {
         // Arrange
         var id = Guid.NewGuid();
-        var repo = new AssociationTrainingModuleCollaboratorRepositoryEF(context, _mapper);
+        var repo = new AssociationTrainingModuleCollaboratorRepositoryEF(context, _mapper.Object);
 
         // Act
         var result = await repo.GetByIdAsync(id);

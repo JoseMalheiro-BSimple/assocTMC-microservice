@@ -6,5 +6,5 @@ namespace Domain.Factory;
 public interface ITrainingModuleFactory
 {
     ITrainingModule Create(Guid id);
-    TrainingModule Create(ITrainingModuleVisitor visitor);
+    ITrainingModule Create(ITrainingModuleVisitor visitor);
 }

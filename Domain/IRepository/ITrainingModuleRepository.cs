@@ -3,6 +3,4 @@ using Domain.Models;
 using Domain.Visitor;
 
 namespace Domain.IRepository;
-public interface ITrainingModuleRepository : IGenericRepositoryEF<ITrainingModule, TrainingModule, ITrainingModuleVisitor>
-{
-}
+public interface ITrainingModuleRepository : IGenericRepositoryEF<ITrainingModule, TrainingModule, ITrainingModuleVisitor> { }

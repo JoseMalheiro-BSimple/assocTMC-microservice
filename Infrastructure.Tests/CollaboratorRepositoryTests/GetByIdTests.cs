@@ -1,5 +1,7 @@
-﻿using Infrastructure.DataModel;
+﻿using Domain.Interfaces;
+using Infrastructure.DataModel;
 using Infrastructure.Repositories;
+using Moq;
 
 namespace Infrastructure.Tests.CollaboratorRepositoryTests;
 
@@ -20,14 +22,21 @@ public class GetByIdTests : RepositoryTestBase
         context.Collaborators.Add(cDM2);
         context.SaveChanges();
 
-        var repo = new CollaboratorRepositoryEF(context, _mapper);
+        var expected = new Mock<ICollaborator>();
+
+        expected.Setup(c => c.Id).Returns(id);
+
+        _mapper.Setup(m => m.Map<CollaboratorDataModel, ICollaborator>(It.Is<CollaboratorDataModel>(c => c.Id == id)))
+               .Returns(expected.Object);
+
+        var repo = new CollaboratorRepositoryEF(context, _mapper.Object);
 
         // Act
         var result = repo.GetById(id);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(id, result!.Id);
+        Assert.Equal(expected.Object.Id, result!.Id);
     }
 
     [Fact]
@@ -36,7 +45,7 @@ public class GetByIdTests : RepositoryTestBase
         // Arrange
         var id = Guid.NewGuid();
 
-        var repo = new CollaboratorRepositoryEF(context, _mapper);
+        var repo = new CollaboratorRepositoryEF(context, _mapper.Object);
 
         // Act
         var result = repo.GetById(id);

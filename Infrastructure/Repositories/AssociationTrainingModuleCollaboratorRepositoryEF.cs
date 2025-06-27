@@ -22,7 +22,7 @@ namespace Infrastructure.Repositories
             if (trainingModuleCollabDM == null)
                 return null;
 
-            return _mapper.Map<AssociationTrainingModuleCollaboratorDataModel, AssociationTrainingModuleCollaborator>(trainingModuleCollabDM);
+            return _mapper.Map<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>(trainingModuleCollabDM);
         }
 
         public override async Task<IAssociationTrainingModuleCollaborator?> GetByIdAsync(Guid id)
@@ -33,7 +33,7 @@ namespace Infrastructure.Repositories
             if (trainingModuleCollabDM == null)
                 return null;
 
-            return _mapper.Map<AssociationTrainingModuleCollaboratorDataModel, AssociationTrainingModuleCollaborator>(trainingModuleCollabDM);
+            return _mapper.Map<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>(trainingModuleCollabDM);
         }
 
         public async Task<IEnumerable<IAssociationTrainingModuleCollaborator>> GetByCollabAndTrainingModule(Guid collabId, Guid trainingModuleId)
@@ -42,7 +42,7 @@ namespace Infrastructure.Repositories
                                          .Where(a => a.CollaboratorId == collabId && a.TrainingModuleId == trainingModuleId)
                                          .ToListAsync();
 
-            return assocsDM.Select(_mapper.Map<AssociationTrainingModuleCollaboratorDataModel, AssociationTrainingModuleCollaborator>);
+            return assocsDM.Select(_mapper.Map<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>);
         }
 
     }

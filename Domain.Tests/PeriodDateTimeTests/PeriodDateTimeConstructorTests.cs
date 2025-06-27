@@ -65,13 +65,17 @@ public class PeriodDateTimeConstructorTests
     public void WhenPassingPeriodDate_ThenObjectIsInstatiatedWithItsDates()
     {
         // Arrange
-        PeriodDate inPeriod = new PeriodDate(It.IsAny<DateOnly>(), It.IsAny<DateOnly>());
+        var startDate = DateOnly.FromDateTime(DateTime.Today);
+        var endDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
+        PeriodDate inPeriod = new PeriodDate(startDate, endDate);
 
         // Act
         PeriodDateTime periodDateTime = new PeriodDateTime(inPeriod);
 
         // Assert
         Assert.NotNull(periodDateTime);
+        Assert.Equal(startDate.ToDateTime(TimeOnly.MinValue), periodDateTime._initDate);
+        Assert.Equal(endDate.ToDateTime(TimeOnly.MinValue), periodDateTime._finalDate);
     }
 
 }

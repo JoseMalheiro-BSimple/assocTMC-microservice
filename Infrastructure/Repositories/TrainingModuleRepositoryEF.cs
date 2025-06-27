@@ -22,7 +22,7 @@ public class TrainingModuleRepositoryEF : GenericRepositoryEF<ITrainingModule, T
         if (tmDM == null)
             return null;
 
-        return _mapper.Map<TrainingModuleDataModel, TrainingModule>(tmDM);
+        return _mapper.Map<TrainingModuleDataModel, ITrainingModule>(tmDM);
     }
 
     public override async Task<ITrainingModule?> GetByIdAsync(Guid id)
@@ -33,6 +33,6 @@ public class TrainingModuleRepositoryEF : GenericRepositoryEF<ITrainingModule, T
         if (tmDM == null)
             return null;
 
-        return _mapper.Map<TrainingModuleDataModel, TrainingModule>(tmDM);
+        return _mapper.Map<TrainingModuleDataModel, ITrainingModule>(tmDM);
     }
 }

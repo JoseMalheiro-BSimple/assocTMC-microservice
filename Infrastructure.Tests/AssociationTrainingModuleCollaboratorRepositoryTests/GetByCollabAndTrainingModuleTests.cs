@@ -1,53 +1,74 @@
-﻿using Domain.Models;
+﻿using Domain.Interfaces;
+using Domain.Models;
 using Infrastructure.DataModel;
 using Infrastructure.Repositories;
+using Moq;
 
 namespace Infrastructure.Tests.AssociationTrainingModuleCollaboratorRepositoryTests;
 public class GetByCollabAndTrainingModuleTests : RepositoryTestBase
 {
     [Fact]
-    public async Task WhenMatchingAssociationsExist_ThenReturnsAll()
+    public async Task WhenSearchingByCollabAndModuleId_ReturnsMatchingAssociations()
     {
         // Arrange
-        var id = Guid.NewGuid();
-        var trainingModuleId = Guid.NewGuid();
-        var collaboratorId = Guid.NewGuid();
-        var period = new PeriodDate(DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddMonths(6)));
+        var matchingTrainingModuleId = Guid.NewGuid();
+        var matchingCollaboratorId = Guid.NewGuid();
 
-        var assocDM = new AssociationTrainingModuleCollaboratorDataModel
+        var nonMatchingTrainingModuleId = Guid.NewGuid();
+        var nonMatchingCollaboratorId = Guid.NewGuid();
+
+        var assoc1 = new AssociationTrainingModuleCollaboratorDataModel
         {
-            Id = id,
-            TrainingModuleId = trainingModuleId,
-            CollaboratorId = collaboratorId,
-            PeriodDate = period
+            Id = Guid.NewGuid(),
+            CollaboratorId = matchingCollaboratorId,
+            TrainingModuleId = matchingTrainingModuleId,
+            PeriodDate = new PeriodDate(DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddMonths(3)))
         };
 
-        context.AssociationTrainingModuleCollaborators.Add(assocDM);
-
-        var id2 = Guid.NewGuid();
-        var trainingModuleId2 = Guid.NewGuid();
-        var collaboratorId2 = Guid.NewGuid();
-        var period2 = new PeriodDate(DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddMonths(6)));
-
-        var assocDM2 = new AssociationTrainingModuleCollaboratorDataModel
+        var assoc2 = new AssociationTrainingModuleCollaboratorDataModel
         {
-            Id = id2,
-            TrainingModuleId = trainingModuleId2,
-            CollaboratorId = collaboratorId2,
-            PeriodDate = period2
+            Id = Guid.NewGuid(),
+            CollaboratorId = matchingCollaboratorId,
+            TrainingModuleId = matchingTrainingModuleId,
+            PeriodDate = new PeriodDate(DateOnly.FromDateTime(DateTime.Today.AddDays(1)), DateOnly.FromDateTime(DateTime.Today.AddMonths(6)))
         };
 
-        context.AssociationTrainingModuleCollaborators.Add(assocDM2);
-        context.SaveChanges();
+        var unrelatedAssoc = new AssociationTrainingModuleCollaboratorDataModel
+        {
+            Id = Guid.NewGuid(),
+            CollaboratorId = nonMatchingCollaboratorId,
+            TrainingModuleId = nonMatchingTrainingModuleId,
+            PeriodDate = new PeriodDate(DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddMonths(2)))
+        };
 
-        var repo = new AssociationTrainingModuleCollaboratorRepositoryEF(context, _mapper);
+        context.AssociationTrainingModuleCollaborators.AddRange(assoc1, assoc2, unrelatedAssoc);
+        await context.SaveChangesAsync();
+
+        // Setup mapper behavior
+        var expectedDomain1 = new Mock<IAssociationTrainingModuleCollaborator>();
+        expectedDomain1.SetupGet(x => x.Id).Returns(assoc1.Id);
+
+        var expectedDomain2 = new Mock<IAssociationTrainingModuleCollaborator>();
+        expectedDomain2.SetupGet(x => x.Id).Returns(assoc2.Id);
+
+        _mapper.Setup(m => m.Map<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>(
+            It.Is<AssociationTrainingModuleCollaboratorDataModel>(dm => dm.Id == assoc1.Id)))
+            .Returns(expectedDomain1.Object);
+
+        _mapper.Setup(m => m.Map<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>(
+            It.Is<AssociationTrainingModuleCollaboratorDataModel>(dm => dm.Id == assoc2.Id)))
+            .Returns(expectedDomain2.Object);
+
+        var repo = new AssociationTrainingModuleCollaboratorRepositoryEF(context, _mapper.Object);
 
         // Act
-        var result = await repo.GetByCollabAndTrainingModule(collaboratorId, trainingModuleId);
+        var result = (await repo.GetByCollabAndTrainingModule(matchingCollaboratorId, matchingTrainingModuleId)).ToList();
 
         // Assert
-        Assert.Single(result.ToList());
-        Assert.Contains(result, r => r.Id == assocDM.Id);
+        Assert.Equal(2, result.Count);
+        Assert.Contains(result, r => r.Id == assoc1.Id);
+        Assert.Contains(result, r => r.Id == assoc2.Id);
+        Assert.DoesNotContain(result, r => r.Id == unrelatedAssoc.Id);
     }
 
     [Fact]
@@ -57,7 +78,7 @@ public class GetByCollabAndTrainingModuleTests : RepositoryTestBase
         var trainingModuleId = Guid.NewGuid();
         var collaboratorId = Guid.NewGuid();
 
-        var repo = new AssociationTrainingModuleCollaboratorRepositoryEF(context, _mapper);
+        var repo = new AssociationTrainingModuleCollaboratorRepositoryEF(context, _mapper.Object);
 
         // Act
         var result = await repo.GetByCollabAndTrainingModule(collaboratorId, trainingModuleId);

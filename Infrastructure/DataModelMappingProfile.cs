@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Models;
+using Domain.Interfaces;
 using Infrastructure.DataModel;
 using Infrastructure.Resolvers;
 
@@ -9,14 +9,14 @@ public class DataModelMappingProfile : Profile
 {
     public DataModelMappingProfile()
     {
-        CreateMap<AssociationTrainingModuleCollaborator, AssociationTrainingModuleCollaboratorDataModel>();
-        CreateMap<AssociationTrainingModuleCollaboratorDataModel, AssociationTrainingModuleCollaborator>()
+        CreateMap<IAssociationTrainingModuleCollaborator, AssociationTrainingModuleCollaboratorDataModel>();
+        CreateMap<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>()
             .ConvertUsing<AssociationTrainingModuleCollaboratorDataModelConverter>();
-        CreateMap<Collaborator, CollaboratorDataModel>();
-        CreateMap<CollaboratorDataModel, Collaborator>()
+        CreateMap<ICollaborator, CollaboratorDataModel>();
+        CreateMap<CollaboratorDataModel, ICollaborator>()
             .ConvertUsing<CollaboratorDataModelConverter>();
-        CreateMap<TrainingModule, TrainingModuleDataModel>();
-        CreateMap<TrainingModuleDataModel, TrainingModule>()
+        CreateMap<ITrainingModule, TrainingModuleDataModel>();
+        CreateMap<TrainingModuleDataModel, ITrainingModule>()
             .ConvertUsing<TrainingModuleDataModelConverter>();
     }
 }

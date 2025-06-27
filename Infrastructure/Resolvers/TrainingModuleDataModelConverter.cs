@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Domain.Factory;
-using Domain.Models;
+using Domain.Interfaces;
 using Infrastructure.DataModel;
 
 namespace Infrastructure.Resolvers;
-public class TrainingModuleDataModelConverter : ITypeConverter<TrainingModuleDataModel, TrainingModule>
+public class TrainingModuleDataModelConverter : ITypeConverter<TrainingModuleDataModel, ITrainingModule>
 {
     private readonly ITrainingModuleFactory _factory;
 
@@ -13,7 +13,7 @@ public class TrainingModuleDataModelConverter : ITypeConverter<TrainingModuleDat
         _factory = factory;
     }
 
-    public TrainingModule Convert(TrainingModuleDataModel source, TrainingModule destination, ResolutionContext context)
+    public ITrainingModule Convert(TrainingModuleDataModel source, ITrainingModule destination, ResolutionContext context)
     {
         return _factory.Create(source);
     }

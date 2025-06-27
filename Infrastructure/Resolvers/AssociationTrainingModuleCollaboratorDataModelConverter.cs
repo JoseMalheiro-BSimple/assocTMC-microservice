@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Domain.Factory;
-using Domain.Models;
+using Domain.Interfaces;
 using Infrastructure.DataModel;
 
 namespace Infrastructure.Resolvers;
 
-public class AssociationTrainingModuleCollaboratorDataModelConverter : ITypeConverter<AssociationTrainingModuleCollaboratorDataModel, AssociationTrainingModuleCollaborator>
+public class AssociationTrainingModuleCollaboratorDataModelConverter : ITypeConverter<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>
 {
     private readonly IAssociationTrainingModuleCollaboratorFactory _factory;
 
@@ -14,7 +14,7 @@ public class AssociationTrainingModuleCollaboratorDataModelConverter : ITypeConv
         _factory = factory;
     }
 
-    public AssociationTrainingModuleCollaborator Convert(AssociationTrainingModuleCollaboratorDataModel source, AssociationTrainingModuleCollaborator destination, ResolutionContext context)
+    public IAssociationTrainingModuleCollaborator Convert(AssociationTrainingModuleCollaboratorDataModel source, IAssociationTrainingModuleCollaborator destination, ResolutionContext context)
     {
         return _factory.Create(source);
     }

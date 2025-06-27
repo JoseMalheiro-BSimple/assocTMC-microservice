@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Domain.Factory;
-using Domain.Models;
+using Domain.Interfaces;
 using Infrastructure.DataModel;
 
 namespace Infrastructure.Resolvers;
-public class CollaboratorDataModelConverter : ITypeConverter<CollaboratorDataModel, Collaborator>
+public class CollaboratorDataModelConverter : ITypeConverter<CollaboratorDataModel, ICollaborator>
 {
     private readonly ICollaboratorFactory _factory;
 
@@ -13,7 +13,7 @@ public class CollaboratorDataModelConverter : ITypeConverter<CollaboratorDataMod
         _factory = factory;
     }
 
-    public Collaborator Convert(CollaboratorDataModel source, Collaborator destination, ResolutionContext context)
+    public ICollaborator Convert(CollaboratorDataModel source, ICollaborator destination, ResolutionContext context)
     {
         return _factory.Create(source);
     }

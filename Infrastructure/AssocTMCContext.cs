@@ -8,9 +8,7 @@ public class AssocTMCContext : DbContext
     public virtual DbSet<CollaboratorDataModel> Collaborators { get; set; }
     public virtual DbSet<TrainingModuleDataModel> TrainingModules { get; set; }
 
-    public AssocTMCContext(DbContextOptions<AssocTMCContext> options) : base(options)
-    {
-    }
+    public AssocTMCContext(DbContextOptions<AssocTMCContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

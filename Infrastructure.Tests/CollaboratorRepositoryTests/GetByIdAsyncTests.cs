@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Domain.Interfaces;
+using Domain.Models;
 using Infrastructure.DataModel;
 using Infrastructure.Repositories;
 using Moq;
@@ -22,14 +23,21 @@ public class GetByIdAsyncTests : RepositoryTestBase
         context.Collaborators.Add(cDM2);
         context.SaveChanges();
 
-        var repo = new CollaboratorRepositoryEF(context, _mapper);
+        var expected = new Mock<ICollaborator>();
+
+        expected.Setup(c => c.Id).Returns(id);
+
+        _mapper.Setup(m => m.Map<CollaboratorDataModel, ICollaborator>(It.Is<CollaboratorDataModel>(c => c.Id == id)))
+               .Returns(expected.Object);
+
+        var repo = new CollaboratorRepositoryEF(context, _mapper.Object);
 
         // Act
         var result = await repo.GetByIdAsync(id);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(id, result!.Id);
+        Assert.Equal(expected.Object.Id, result!.Id);
     }
 
 
@@ -39,7 +47,7 @@ public class GetByIdAsyncTests : RepositoryTestBase
         // Arrange
         var id = Guid.NewGuid();
 
-        var repo = new CollaboratorRepositoryEF(context, _mapper);
+        var repo = new CollaboratorRepositoryEF(context, _mapper.Object);
 
         // Act
         var result = await repo.GetByIdAsync(id);

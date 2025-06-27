@@ -50,7 +50,7 @@ public class AssociationTrainingModuleCollaboratorFactory : IAssociationTraining
 
     }
 
-    public AssociationTrainingModuleCollaborator Create(IAssociationTrainingModuleCollaboratorVisitor visitor)
+    public IAssociationTrainingModuleCollaborator Create(IAssociationTrainingModuleCollaboratorVisitor visitor)
     {
         return new AssociationTrainingModuleCollaborator(visitor.Id, visitor.TrainingModuleId, visitor.CollaboratorId, visitor.PeriodDate);
     }
