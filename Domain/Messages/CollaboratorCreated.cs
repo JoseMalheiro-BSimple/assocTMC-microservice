@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
 
-namespace Domain.Messaging;
+namespace Domain.Messages;
 public record CollaboratorCreated(Guid userId, Guid collabId, PeriodDateTime periodDateTime);
     
     

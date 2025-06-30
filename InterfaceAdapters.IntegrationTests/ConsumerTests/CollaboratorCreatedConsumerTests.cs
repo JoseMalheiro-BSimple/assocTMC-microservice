@@ -1,5 +1,5 @@
 ﻿using Application.Services;
-using Domain.Messaging;
+using Domain.Messages;
 using Domain.Models;
 using InterfaceAdapters.Consumers;
 using MassTransit;
