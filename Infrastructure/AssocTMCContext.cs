@@ -13,7 +13,13 @@ public class AssocTMCContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AssociationTrainingModuleCollaboratorDataModel>()
-        .OwnsOne(a => a.PeriodDate);
+            .OwnsOne(a => a.PeriodDate);
+
+        modelBuilder.Entity<CollaboratorDataModel>()
+            .OwnsOne(a => a.Period);
+
+        modelBuilder.Entity<TrainingModuleDataModel>().OwnsMany(
+            tm => tm.Periods);
 
         base.OnModelCreating(modelBuilder);
     }

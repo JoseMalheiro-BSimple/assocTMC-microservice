@@ -1,8 +1,9 @@
 ﻿using Domain.Interfaces;
-using Domain.Models;
+using Domain.ValueObjects;
 using Domain.Visitor;
 
 namespace Infrastructure.DataModel;
+
 public class AssociationTrainingModuleCollaboratorDataModel : IAssociationTrainingModuleCollaboratorVisitor
 {
     public Guid Id { get; set; }

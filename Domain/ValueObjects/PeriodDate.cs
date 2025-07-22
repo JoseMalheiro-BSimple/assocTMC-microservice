@@ -1,4 +1,4 @@
-﻿namespace Domain.Models;
+﻿namespace Domain.ValueObjects;
 public class PeriodDate
 {
     public DateOnly InitDate { get; set; }

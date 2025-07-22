@@ -1,5 +1,5 @@
 ﻿using Domain.Interfaces;
-using Domain.Models;
+using Domain.ValueObjects;
 using Domain.Visitor;
 
 namespace Domain.Factory;

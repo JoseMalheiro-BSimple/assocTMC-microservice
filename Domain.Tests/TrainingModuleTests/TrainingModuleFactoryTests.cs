@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Domain.ValueObjects;
 using Moq;
 
 namespace Domain.Tests.TrainingModuleTests;
@@ -9,6 +10,6 @@ public class TrainingModuleFactoryTests
     public void WhenPassingValidGUID_ThenReturnTrainingModule()
     {
         // Act
-        new TrainingModule(It.IsAny<Guid>());
+        new TrainingModule(It.IsAny<Guid>(), It.IsAny<List<PeriodDateTime>>());
     }
 }

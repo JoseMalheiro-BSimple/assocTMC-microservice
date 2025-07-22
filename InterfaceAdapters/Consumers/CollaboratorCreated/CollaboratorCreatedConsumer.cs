@@ -1,9 +1,10 @@
-﻿using Application.Services;
+﻿using Application.DTO;
+using Application.IServices;
 using Domain.Messages;
 using MassTransit;
 
 namespace InterfaceAdapters.Consumers;
-public class CollaboratorCreatedConsumer : IConsumer<CollaboratorCreated>
+public class CollaboratorCreatedConsumer : IConsumer<CollaboratorCreatedMessage>
 {
     private readonly ICollaboratorService _collaboratorService;
 
@@ -12,9 +13,9 @@ public class CollaboratorCreatedConsumer : IConsumer<CollaboratorCreated>
         _collaboratorService = collaboratorService;
     }
 
-    public async Task Consume(ConsumeContext<CollaboratorCreated> context)
+    public async Task Consume(ConsumeContext<CollaboratorCreatedMessage> context)
     {
         var msg = context.Message;
-        await _collaboratorService.SubmitAsync(msg.collabId);
+        await _collaboratorService.AddConsumed(new CreateCollaboratorDTO(msg.Id, msg.PeriodDateTime));
     }
 }

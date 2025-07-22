@@ -1,5 +1,5 @@
 ﻿using Application.DTO;
-using Application.Services;
+using Application.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InterfaceAdapters.Controllers;
@@ -21,6 +21,15 @@ public class AssociationTrainingModuleCollaboratorController : ControllerBase
         var assocCreated = await _associationTrainingModuleCollaboratorService.Create(assocDTO);
 
         return assocCreated.ToActionResult();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {
+        var dto = new RemoveAssociationTrainingModuleCollaboratorDTO(id);
+        var result = await _associationTrainingModuleCollaboratorService.Remove(dto);
+
+        return result.ToActionResult();
     }
 }
 

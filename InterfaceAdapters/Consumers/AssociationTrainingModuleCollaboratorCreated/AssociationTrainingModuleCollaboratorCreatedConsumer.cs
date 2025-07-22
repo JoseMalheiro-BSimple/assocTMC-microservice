@@ -1,9 +1,10 @@
-﻿using Application.Services;
+﻿using Application.DTO;
+using Application.IServices;
 using Domain.Messages;
 using MassTransit;
 
 namespace InterfaceAdapters.Consumers;
-public class AssociationTrainingModuleCollaboratorCreatedConsumer : IConsumer<AssociationTrainingModuleCollaboratorCreated>
+public class AssociationTrainingModuleCollaboratorCreatedConsumer : IConsumer<AssociationTrainingModuleCollaboratorCreatedMessage>
 {
     private readonly IAssociationTrainingModuleCollaboratorService _assocService;
 
@@ -12,9 +13,9 @@ public class AssociationTrainingModuleCollaboratorCreatedConsumer : IConsumer<As
         _assocService = assocService;
     }
 
-    public async Task Consume(ConsumeContext<AssociationTrainingModuleCollaboratorCreated> context)
+    public async Task Consume(ConsumeContext<AssociationTrainingModuleCollaboratorCreatedMessage> context)
     {
         var msg = context.Message;
-        await _assocService.CreateWithNoValidations(msg.id, msg.trainingModuleId, msg.collaboratorId, msg.periodDate);
+        await _assocService.CreateWithNoValidations(new CreateConsumedAssociationTrainingModuleCollaboratorDTO(msg.Id, msg.TrainingModuleId, msg.CollaboratorId, msg.PeriodDate));
     }
 }

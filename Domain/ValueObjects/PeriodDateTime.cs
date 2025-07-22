@@ -1,4 +1,4 @@
-﻿namespace Domain.Models;
+﻿namespace Domain.ValueObjects;
 public class PeriodDateTime
 {
     public DateTime _initDate { get; set; }

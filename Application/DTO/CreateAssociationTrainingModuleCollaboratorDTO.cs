@@ -1,4 +1,4 @@
-using Domain.Models;
+using Domain.ValueObjects;
 
 namespace Application.DTO;
 
@@ -8,8 +8,10 @@ public record CreateAssociationTrainingModuleCollaboratorDTO
     public Guid TrainingModuleId { get; set; }
     public PeriodDate PeriodDate { get; set; }
 
-    public CreateAssociationTrainingModuleCollaboratorDTO()
+    public CreateAssociationTrainingModuleCollaboratorDTO(Guid collaboratorId, Guid trainingModuleId, PeriodDate periodDate)
     {
-
+        CollaboratorId = collaboratorId;
+        TrainingModuleId = trainingModuleId;
+        PeriodDate = periodDate;
     }
 }

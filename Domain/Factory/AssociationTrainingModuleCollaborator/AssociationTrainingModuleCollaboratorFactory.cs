@@ -1,6 +1,7 @@
 ﻿using Domain.Interfaces;
 using Domain.IRepository;
 using Domain.Models;
+using Domain.ValueObjects;
 using Domain.Visitor;
 
 namespace Domain.Factory;
@@ -30,6 +31,22 @@ public class AssociationTrainingModuleCollaboratorFactory : IAssociationTraining
 
         PeriodDate periodDate = new PeriodDate(initDate, endDate);
 
+        // Period has to be included in any of the training module periods
+        bool isPeriodIncluded = trainingModule.Periods.Any(tmPeriod =>
+        {
+            // Convert DateTime to DateOnly for comparison
+            DateOnly tmPeriodInitDate = DateOnly.FromDateTime(tmPeriod._initDate);
+            DateOnly tmPeriodEndDate = DateOnly.FromDateTime(tmPeriod._finalDate);
+
+            // Check if the requested periodDate is fully contained within tmPeriod
+            return periodDate.InitDate >= tmPeriodInitDate && periodDate.FinalDate <= tmPeriodEndDate;
+        });
+
+        if (!isPeriodIncluded)
+        {
+            throw new InvalidOperationException("The requested association period is not fully contained within any of the training module's defined periods.");
+        }
+
         // Unicity test
         IEnumerable<IAssociationTrainingModuleCollaborator> assocsSameCollabAndTM = await _assocTMCRepository.GetByCollabAndTrainingModule(collaboratorId, trainingModuleId);
 
@@ -40,8 +57,9 @@ public class AssociationTrainingModuleCollaboratorFactory : IAssociationTraining
         if (hasOverlap)
             throw new InvalidOperationException("An overlapping association already exists for this collaborator and training module.");
 
+        Guid id = Guid.NewGuid();
 
-        return new AssociationTrainingModuleCollaborator(trainingModuleId, collaboratorId, periodDate);
+        return new AssociationTrainingModuleCollaborator(id, trainingModuleId, collaboratorId, periodDate);
     }
 
     public IAssociationTrainingModuleCollaborator Create(Guid id, Guid trainingModuleId, Guid collaboratorId, PeriodDate periodDate)

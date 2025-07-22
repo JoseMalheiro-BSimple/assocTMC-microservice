@@ -1,8 +1,4 @@
 ﻿using AutoMapper;
-using Domain.Factory;
-using Domain.Models;
-using Infrastructure.DataModel;
-using Infrastructure.Resolvers;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 

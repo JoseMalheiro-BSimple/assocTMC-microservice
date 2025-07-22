@@ -1,12 +1,14 @@
-﻿using Domain.Factory;
+﻿using Application.DTO;
+using Application.IServices;
+using Domain.Factory;
 using Domain.Interfaces;
 using Domain.IRepository;
 
 namespace Application.Services;
 public class CollaboratorService : ICollaboratorService
 {
-    public ICollaboratorRepository _collaboratorRepository { get; set; }
-    public ICollaboratorFactory _collaboratorFactory { get; set; }
+    private readonly ICollaboratorRepository _collaboratorRepository;
+    private readonly ICollaboratorFactory _collaboratorFactory;
 
     public CollaboratorService(ICollaboratorRepository collaboratorRepository, ICollaboratorFactory collaboratorFactory)
     {
@@ -14,11 +16,11 @@ public class CollaboratorService : ICollaboratorService
         _collaboratorFactory = collaboratorFactory;
     }
 
-    public async Task SubmitAsync(Guid id)
+    public async Task AddConsumed(CreateCollaboratorDTO createDTO)
     {
         ICollaborator collaborator;
 
-        collaborator =  _collaboratorFactory.Create(id);
+        collaborator =  _collaboratorFactory.Create(createDTO.Id, createDTO.Period);
         collaborator = await _collaboratorRepository.AddAsync(collaborator);
 
         if (collaborator == null)

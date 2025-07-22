@@ -45,5 +45,34 @@ namespace Infrastructure.Repositories
             return assocsDM.Select(_mapper.Map<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>);
         }
 
+        public IAssociationTrainingModuleCollaborator AddWithoutSavingAsync(IAssociationTrainingModuleCollaborator entity)
+        {
+            var domainEntity = (AssociationTrainingModuleCollaborator)entity;
+            
+            var dataModel = _mapper.Map<IAssociationTrainingModuleCollaborator, AssociationTrainingModuleCollaboratorDataModel>(domainEntity);
+            _context.Set<AssociationTrainingModuleCollaboratorDataModel>().Add(dataModel);
+
+            return _mapper.Map<AssociationTrainingModuleCollaboratorDataModel, IAssociationTrainingModuleCollaborator>(dataModel);
+        }
+
+        public async Task RemoveWithoutSavingAsync(IAssociationTrainingModuleCollaborator entity)
+        {
+            var trackedDataModel = _context.Set<AssociationTrainingModuleCollaboratorDataModel>()
+                                           .Local
+                                           .FirstOrDefault(dm => dm.Id == entity.Id);
+
+            if (trackedDataModel == null)
+            {
+                trackedDataModel = await _context.Set<AssociationTrainingModuleCollaboratorDataModel>()
+                                               .FirstOrDefaultAsync(dm => dm.Id == entity.Id);
+                if (trackedDataModel == null)
+                {
+                    return;
+                }
+            }
+
+            _context.Set<AssociationTrainingModuleCollaboratorDataModel>().Remove(trackedDataModel);
+
+        }
     }
 }

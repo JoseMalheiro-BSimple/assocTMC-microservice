@@ -1,7 +1,8 @@
-﻿using Domain.Models;
+﻿using Domain.ValueObjects;
 
 namespace Domain.Interfaces;
 public interface ICollaborator
 {
     Guid Id { get; }
+    PeriodDateTime Period { get; }
 }

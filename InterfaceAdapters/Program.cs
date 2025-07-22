@@ -11,6 +11,8 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using InterfaceAdapters.Consumers;
 using InterfaceAdapters.Publishers;
+using Application.IServices;
+using InterfaceAdapters.Consumers.AssociationTrainingModuleCollaboratorCreated;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +27,7 @@ builder.Services.AddDbContext<AssocTMCContext>(opt =>
 
 //Services
 builder.Services.AddTransient<IAssociationTrainingModuleCollaboratorService,AssociationTrainingModuleCollaboratorService>();
-builder.Services.AddTransient<ICollaboratorService,CollaboratorService>();
+builder.Services.AddTransient<ICollaboratorService, CollaboratorService>();
 builder.Services.AddTransient<ITrainingModuleService, TrainingModuleService>();
 
 //Repositories
@@ -46,16 +48,14 @@ builder.Services.AddAutoMapper(cfg =>
 {
     //DataModels
     cfg.AddProfile<DataModelMappingProfile>();
-
-    //DTO
-    cfg.CreateMap<AssociationTrainingModuleCollaborator, AssociationTrainingModuleCollaboratorDTO>();
 });
 
-builder.Services.AddScoped<IMessagePublisher, MassTransitPublisher>();
+builder.Services.AddScoped<IAssociationTrainingModuleCollaboratorPublisher, AssociationTrainingModuleCollaboratorPublisher>();
 
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<AssociationTrainingModuleCollaboratorCreatedConsumer>();
+    x.AddConsumer<AssociationTrainingModuleCollaboratorRemovedConsumer>();
     x.AddConsumer<CollaboratorCreatedConsumer>();
     x.AddConsumer<TrainingModuleCreatedConsumer>();
     x.UsingRabbitMq((context, cfg) =>
@@ -69,6 +69,7 @@ builder.Services.AddMassTransit(x =>
         cfg.ReceiveEndpoint($"assocTMCCMD-{random}", e =>
         {
             e.ConfigureConsumer<AssociationTrainingModuleCollaboratorCreatedConsumer>(context);
+            e.ConfigureConsumer<AssociationTrainingModuleCollaboratorRemovedConsumer>(context);
             e.ConfigureConsumer<CollaboratorCreatedConsumer>(context);
             e.ConfigureConsumer<TrainingModuleCreatedConsumer>(context);
         });
@@ -106,10 +107,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("IntegrationTests")) 
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AssocTMCContext>();
-    dbContext.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<AssocTMCContext>();
+        dbContext.Database.Migrate();
+    }
 }
 
 app.Run();

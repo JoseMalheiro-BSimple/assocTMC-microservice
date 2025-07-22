@@ -1,4 +1,5 @@
 ﻿using Domain.Interfaces;
+using Domain.ValueObjects;
 
 namespace Domain.Models;
 public class AssociationTrainingModuleCollaborator : IAssociationTrainingModuleCollaborator
@@ -6,14 +7,10 @@ public class AssociationTrainingModuleCollaborator : IAssociationTrainingModuleC
     public Guid Id { get; }
     public Guid TrainingModuleId { get; }
     public Guid CollaboratorId { get; }
-    public PeriodDate PeriodDate { get; }
+    public PeriodDate PeriodDate { get; } = new PeriodDate();
 
-    public AssociationTrainingModuleCollaborator(Guid trainingModuleId, Guid collaboratorId, PeriodDate periodDate)
+    public AssociationTrainingModuleCollaborator()
     {
-        Id = Guid.NewGuid();
-        TrainingModuleId = trainingModuleId;
-        CollaboratorId = collaboratorId;
-        PeriodDate = periodDate;
     }
 
     public AssociationTrainingModuleCollaborator(Guid id, Guid trainingModuleId, Guid collaboratorId, PeriodDate periodDate)

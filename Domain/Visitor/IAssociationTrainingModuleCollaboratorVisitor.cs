@@ -1,4 +1,4 @@
-﻿using Domain.Models;
+﻿using Domain.ValueObjects;
 
 namespace Domain.Visitor;
 public interface IAssociationTrainingModuleCollaboratorVisitor

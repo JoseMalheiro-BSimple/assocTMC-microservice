@@ -1,9 +1,10 @@
-﻿using Application.Services;
+﻿using Application.DTO;
+using Application.IServices;
 using Domain.Messages;
 using MassTransit;
 
 namespace InterfaceAdapters.Consumers;
-public class TrainingModuleCreatedConsumer : IConsumer<TrainingModuleCreated>
+public class TrainingModuleCreatedConsumer : IConsumer<TrainingModuleCreatedMessage>
 {
     private readonly ITrainingModuleService _trainingModuleService;
 
@@ -12,9 +13,9 @@ public class TrainingModuleCreatedConsumer : IConsumer<TrainingModuleCreated>
         _trainingModuleService = trainingModuleService;
     }
 
-    public async Task Consume(ConsumeContext<TrainingModuleCreated> context)
+    public async Task Consume(ConsumeContext<TrainingModuleCreatedMessage> context)
     {
         var msg = context.Message;
-        await _trainingModuleService.SubmitAsync(msg.id);
+        await _trainingModuleService.AddConsumed(new CreateTrainingModuleDTO(msg.Id, msg.Periods));
     }
 }
