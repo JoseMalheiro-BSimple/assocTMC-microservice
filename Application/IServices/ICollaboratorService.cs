@@ -3,6 +3,6 @@
 namespace Application.IServices;
 public interface ICollaboratorService
 {
-    public Task AddConsumed(CreateCollaboratorDTO createDTO);
+    Task AddConsumed(CreateCollaboratorDTO createDTO);
 }
 

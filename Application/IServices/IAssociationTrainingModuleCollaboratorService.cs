@@ -3,7 +3,7 @@
 namespace Application.IServices;
 public interface IAssociationTrainingModuleCollaboratorService
 {
-    public Task<Result<AssociationTrainingModuleCollaboratorDTO>> Create(CreateAssociationTrainingModuleCollaboratorDTO assocDTO);
-    public Task CreateWithNoValidations(CreateConsumedAssociationTrainingModuleCollaboratorDTO assocDTO);
-    public Task<Result> Remove(RemoveAssociationTrainingModuleCollaboratorDTO assocDTO);
+    Task<Result<AssociationTrainingModuleCollaboratorDTO>> Create(CreateAssociationTrainingModuleCollaboratorDTO assocDTO);
+    Task CreateWithNoValidations(CreateConsumedAssociationTrainingModuleCollaboratorDTO assocDTO);
+    Task<Result> Remove(RemoveAssociationTrainingModuleCollaboratorDTO assocDTO);
 }
