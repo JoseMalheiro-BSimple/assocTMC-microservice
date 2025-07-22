@@ -26,4 +26,18 @@ public class CollaboratorService : ICollaboratorService
         if (collaborator == null)
             throw new Exception("An error as occured!");
     }
+
+    public async Task EditCollaborator(CollaboratorDTO dto)
+    {
+        var collab = await _collaboratorRepository.GetByIdAsync(dto.Id);
+        if (collab == null)
+            throw new Exception("Collaborator not found.");
+
+        collab.UpdatePeriod(dto.PeriodDateTime);
+
+        var updateCollabDetails = await _collaboratorRepository.UpdateCollaborator(collab);
+
+        if (updateCollabDetails == null)
+            throw new Exception("Failed to update collaborator.");
+    }
 }

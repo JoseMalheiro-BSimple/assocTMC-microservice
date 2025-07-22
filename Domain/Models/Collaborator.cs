@@ -4,8 +4,8 @@ using Domain.ValueObjects;
 namespace Domain.Models;
 public class Collaborator : ICollaborator
 {
-    public Guid Id { get; set; }
-    public PeriodDateTime Period { get; set; } = new PeriodDateTime();
+    public Guid Id { get; private set; }
+    public PeriodDateTime Period { get; private set; } = new PeriodDateTime();
     public Collaborator()
     {
     }
@@ -16,4 +16,8 @@ public class Collaborator : ICollaborator
         Period = periodDateTime;
     }
 
+    public void UpdatePeriod(PeriodDateTime period)
+    {
+        Period = period;
+    }
 }

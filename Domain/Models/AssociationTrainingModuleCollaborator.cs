@@ -4,10 +4,10 @@ using Domain.ValueObjects;
 namespace Domain.Models;
 public class AssociationTrainingModuleCollaborator : IAssociationTrainingModuleCollaborator
 {
-    public Guid Id { get; }
-    public Guid TrainingModuleId { get; }
-    public Guid CollaboratorId { get; }
-    public PeriodDate PeriodDate { get; } = new PeriodDate();
+    public Guid Id { get; private set; }
+    public Guid TrainingModuleId { get; private set; }
+    public Guid CollaboratorId { get; private set; }
+    public PeriodDate PeriodDate { get; private set; } = new PeriodDate();
 
     public AssociationTrainingModuleCollaborator()
     {
