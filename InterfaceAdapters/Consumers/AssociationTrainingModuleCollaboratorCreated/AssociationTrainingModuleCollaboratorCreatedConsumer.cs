@@ -16,6 +16,6 @@ public class AssociationTrainingModuleCollaboratorCreatedConsumer : IConsumer<As
     public async Task Consume(ConsumeContext<AssociationTrainingModuleCollaboratorCreatedMessage> context)
     {
         var msg = context.Message;
-        await _assocService.CreateWithNoValidations(new CreateConsumedAssociationTrainingModuleCollaboratorDTO(msg.Id, msg.TrainingModuleId, msg.CollaboratorId, msg.PeriodDate));
+        await _assocService.CreateWithNoValidations(new CreateConsumedAssociationTrainingModuleCollaboratorDTO(msg.Id, msg.CollaboratorId, msg.TrainingModuleId, msg.PeriodDate));
     }
 }
