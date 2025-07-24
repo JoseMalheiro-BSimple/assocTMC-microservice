@@ -16,9 +16,9 @@ public class AssociationTrainingModuleCollaboratorController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<AssociationTrainingModuleCollaboratorDTO>> Create([FromBody] CreateAssociationTrainingModuleCollaboratorDTO assocDTO)
+    public async Task<ActionResult<AssociationTrainingModuleCollaboratorDTO>> Create([FromBody] AssociationTrainingModuleCollaboratorCreationValuesDTO assocDTO)
     {
-        var assocCreated = await _associationTrainingModuleCollaboratorService.Create(assocDTO);
+        var assocCreated = await _associationTrainingModuleCollaboratorService.Create(new CreateAssociationTrainingModuleCollaboratorDTO(assocDTO.CollaboratorId, assocDTO.TrainingModuleId, assocDTO.PeriodDate));
 
         return assocCreated.ToActionResult();
     }

@@ -65,7 +65,7 @@ public class CreateTests : IntegrationTestBase, IClassFixture<IntegrationTestsWe
             await context.SaveChangesAsync();
         }
 
-        var createDto = new CreateAssociationTrainingModuleCollaboratorDTO
+        var createDto = new AssociationTrainingModuleCollaboratorCreationValuesDTO
         (
             collaboratorId,
             trainingModuleId,
