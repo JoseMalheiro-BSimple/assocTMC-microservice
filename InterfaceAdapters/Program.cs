@@ -13,6 +13,7 @@ using InterfaceAdapters.Consumers;
 using InterfaceAdapters.Publishers;
 using Application.IServices;
 using InterfaceAdapters.Consumers.AssociationTrainingModuleCollaboratorCreated;
+using InterfaceAdapters.Consumers.TrainingModuleCreated;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,7 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<AssociationTrainingModuleCollaboratorRemovedConsumer>();
     x.AddConsumer<CollaboratorCreatedConsumer>();
     x.AddConsumer<TrainingModuleCreatedConsumer>();
+    x.AddConsumer<TrainingModuleUpdatedConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("localhost", "/", h =>
@@ -72,6 +74,7 @@ builder.Services.AddMassTransit(x =>
             e.ConfigureConsumer<AssociationTrainingModuleCollaboratorRemovedConsumer>(context);
             e.ConfigureConsumer<CollaboratorCreatedConsumer>(context);
             e.ConfigureConsumer<TrainingModuleCreatedConsumer>(context);
+            e.ConfigureConsumer<TrainingModuleUpdatedConsumer>(context);
         });
     });
 });
