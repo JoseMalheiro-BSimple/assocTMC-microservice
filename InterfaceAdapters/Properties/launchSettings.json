@@ -32,7 +32,7 @@
       "applicationUrl": "http://localhost:5010",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings:DefaultConnection": "Host=localhost;Database=absanteequery_e090a989;Username=postgres;Password=postgres"
+        "ConnectionStrings:DefaultConnection": "Host=localhost;Database=<YourDbName>;Username=<YourDbUsername>;Password=<YourDbPassword>"
       }
     }
   },

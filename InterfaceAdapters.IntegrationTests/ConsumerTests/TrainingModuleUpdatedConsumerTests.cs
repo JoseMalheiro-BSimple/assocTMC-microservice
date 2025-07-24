@@ -3,15 +3,15 @@ using Application.IServices;
 using Domain.Messages;
 using Domain.ValueObjects;
 using InterfaceAdapters.Consumers;
+using InterfaceAdapters.Consumers.TrainingModuleCreated;
 using MassTransit;
 using Moq;
 using Xunit;
 
 namespace InterfaceAdapters.IntegrationTests.ConsumerTests;
 
-public class TrainingModuleCreatedConsumerTests
+public class TrainingModuleUpdatedConsumerTests
 {
-
     [Fact]
     public void WhenPassingCorrectDependencies_InstantiateConsumer()
     {
@@ -19,7 +19,7 @@ public class TrainingModuleCreatedConsumerTests
         Mock<ITrainingModuleService> _collabService = new Mock<ITrainingModuleService>();
 
         // Act
-        var consumer = new TrainingModuleCreatedConsumer(_collabService.Object);
+        var consumer = new TrainingModuleUpdatedConsumer(_collabService.Object);
 
         // Assert
         Assert.NotNull(consumer);
@@ -30,21 +30,21 @@ public class TrainingModuleCreatedConsumerTests
     {
         // Arrange
         var mockService = new Mock<ITrainingModuleService>();
-        var consumer = new TrainingModuleCreatedConsumer(mockService.Object);
+        var consumer = new TrainingModuleUpdatedConsumer(mockService.Object);
 
-        var message = new TrainingModuleMessage(
+        var message = new TrainingModuleUpdatedMessage(
             Guid.NewGuid(),
             Guid.NewGuid(),
             new List<PeriodDateTime> { new PeriodDateTime() }
         );
 
-        var mockContext = new Mock<ConsumeContext<TrainingModuleMessage>>();
+        var mockContext = new Mock<ConsumeContext<TrainingModuleUpdatedMessage>>();
         mockContext.Setup(c => c.Message).Returns(message);
 
         // Act
         await consumer.Consume(mockContext.Object);
 
         // Assert
-        mockService.Verify(s => s.AddConsumed(new CreateTrainingModuleDTO(message.Id, message.Periods)), Times.Once);
+        mockService.Verify(s => s.SubmitUpdateAsync(new UpdateConsumedTrainingModuleDTO(message.Id, message.Periods)), Times.Once);
     }
 }

@@ -25,12 +25,9 @@ public class AssociationTrainingModuleCollaboratorService : IAssociationTraining
         try
         {
             tmc = await _assocTMCFactory.Create(assocDTO.TrainingModuleId, assocDTO.CollaboratorId, assocDTO.PeriodDate.InitDate, assocDTO.PeriodDate.FinalDate);
-            tmc = _assocTMCRepository.AddWithoutSavingAsync(tmc);
+            tmc = await _assocTMCRepository.AddAsync(tmc);
 
             await _publisher.PublishAssociationTrainingModuleCollaboratorCreatedMessage(tmc.Id, tmc.TrainingModuleId, tmc.CollaboratorId, tmc.PeriodDate);
-
-            // Only save my changes if the publish occurs with no errors
-            await _assocTMCRepository.SaveChangesAsync();
 
             var resultDto = new AssociationTrainingModuleCollaboratorDTO();
             resultDto.Id = tmc.Id;
@@ -80,11 +77,9 @@ public class AssociationTrainingModuleCollaboratorService : IAssociationTraining
             }
 
             await _assocTMCRepository.RemoveWithoutSavingAsync(associationToRemove);
+            await _assocTMCRepository.SaveChangesAsync();
 
             await _publisher.PublishAssociationTrainingModuleCollaboratorRemovedMessage(assocDTO.Id);
-
-            // Only save removal after the publish goes through
-            await _assocTMCRepository.SaveChangesAsync();
 
             return Result.Success();
         }

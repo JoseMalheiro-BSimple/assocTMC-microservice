@@ -3,6 +3,7 @@ using Application.IServices;
 using Domain.Factory;
 using Domain.Interfaces;
 using Domain.IRepository;
+using Domain.Models;
 
 namespace Application.Services;
 public class TrainingModuleService : ITrainingModuleService
@@ -25,5 +26,15 @@ public class TrainingModuleService : ITrainingModuleService
 
         if (trainingModule == null)
             throw new Exception("An error as occured!");
+    }
+
+    public async Task SubmitUpdateAsync(UpdateConsumedTrainingModuleDTO updateDTO)
+    {
+        var trainingModule = await _tmRepository.GetByIdAsync(updateDTO.Id);
+        if (trainingModule == null)
+            throw new ArgumentException("TrainingModule not found.");
+
+        var updatedTrainingModule = new TrainingModule(updateDTO.Id, updateDTO.Periods);
+        var updated = await _tmRepository.UpdateAsync(updatedTrainingModule);
     }
 }

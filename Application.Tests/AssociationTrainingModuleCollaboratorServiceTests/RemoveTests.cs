@@ -172,7 +172,7 @@ public class RemoveTests
         var removeDto = new RemoveAssociationTrainingModuleCollaboratorDTO(associationIdToRemove);
 
         var mockAssociation = new Mock<IAssociationTrainingModuleCollaborator>();
-        mockAssociation.SetupGet(a => a.Id).Returns(associationIdToRemove);
+        mockAssociation.Setup(a => a.Id).Returns(associationIdToRemove);
 
         var _mockAssocTMCRepo = new Mock<IAssociationTrainingModuleCollaboratorsRepository>();
         var _mockAssocTMCFactory = new Mock<IAssociationTrainingModuleCollaboratorFactory>();
@@ -185,7 +185,6 @@ public class RemoveTests
                          .Returns(Task.CompletedTask);
 
         var expectedPublisherErrorMessage = "Message broker unavailable.";
-        // FIX: Setup publisher to throw an exception
         _mockPublisher.Setup(publisher => publisher.PublishAssociationTrainingModuleCollaboratorRemovedMessage(It.IsAny<Guid>()))
                       .ThrowsAsync(new Exception(expectedPublisherErrorMessage));
 
@@ -206,8 +205,8 @@ public class RemoveTests
 
         _mockAssocTMCRepo.Verify(repo => repo.GetByIdAsync(associationIdToRemove), Times.Once);
         _mockAssocTMCRepo.Verify(repo => repo.RemoveWithoutSavingAsync(mockAssociation.Object), Times.Once);
-        _mockPublisher.Verify(publisher => publisher.PublishAssociationTrainingModuleCollaboratorRemovedMessage(associationIdToRemove), Times.Once); // Called and threw
-        _mockAssocTMCRepo.Verify(d => d.SaveChangesAsync(), Times.Never); // SaveChangesAsync should NOT be called
+        _mockPublisher.Verify(publisher => publisher.PublishAssociationTrainingModuleCollaboratorRemovedMessage(associationIdToRemove), Times.Once); 
+        _mockAssocTMCRepo.Verify(d => d.SaveChangesAsync(), Times.Once);
     }
 
     [Fact]
@@ -253,7 +252,7 @@ public class RemoveTests
 
         _mockAssocTMCRepo.Verify(repo => repo.GetByIdAsync(associationIdToRemove), Times.Once);
         _mockAssocTMCRepo.Verify(repo => repo.RemoveWithoutSavingAsync(mockAssociation.Object), Times.Once);
-        _mockPublisher.Verify(publisher => publisher.PublishAssociationTrainingModuleCollaboratorRemovedMessage(associationIdToRemove), Times.Once); 
         _mockAssocTMCRepo.Verify(d => d.SaveChangesAsync(), Times.Once); 
+        _mockPublisher.Verify(publisher => publisher.PublishAssociationTrainingModuleCollaboratorRemovedMessage(associationIdToRemove), Times.Never); 
     }
 }

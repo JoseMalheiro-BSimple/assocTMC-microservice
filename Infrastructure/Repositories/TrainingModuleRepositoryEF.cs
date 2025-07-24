@@ -2,8 +2,10 @@
 using Domain.Interfaces;
 using Domain.IRepository;
 using Domain.Models;
+using Domain.ValueObjects;
 using Infrastructure.DataModel;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Infrastructure.Repositories;
 public class TrainingModuleRepositoryEF : GenericRepositoryEF<ITrainingModule, TrainingModule, TrainingModuleDataModel>, ITrainingModuleRepository
@@ -34,5 +36,34 @@ public class TrainingModuleRepositoryEF : GenericRepositoryEF<ITrainingModule, T
             return null;
 
         return _mapper.Map<TrainingModuleDataModel, ITrainingModule>(tmDM);
+    }
+
+    public async Task<ITrainingModule> UpdateAsync(ITrainingModule entity)
+    {
+        if (entity == null)
+        {
+            throw new ArgumentNullException(nameof(entity));
+        }
+
+        var existingTrainingModuleDM = await _context.Set<TrainingModuleDataModel>()
+                                                     .Include(dm => dm.Periods)
+                                                     .FirstOrDefaultAsync(dm => dm.Id == entity.Id);
+
+        if (existingTrainingModuleDM == null)
+        {
+            throw new ArgumentException($"TrainingModule with ID {entity.Id} not found for update.");
+        }
+
+        existingTrainingModuleDM.Periods.Clear();
+        if (entity.Periods != null)
+        {
+            existingTrainingModuleDM.Periods.AddRange(entity.Periods);
+        }
+
+        await _context.SaveChangesAsync();
+
+        var result = _mapper.Map<TrainingModuleDataModel, ITrainingModule>(existingTrainingModuleDM);
+
+        return result;
     }
 }
